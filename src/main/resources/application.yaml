@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: mlc-loan-application
+
+server:
+  port: 8081
+  # for ResponseStatusException messages
+  error:
+    include-message: always
+
+camunda:
+  bpm:
+    admin-user:
+      id: demo
+      firstName: demo
+      password: demo
+    database:
+      schema-update: true
+    auto-deployment-enabled: true
+    history-level: activity

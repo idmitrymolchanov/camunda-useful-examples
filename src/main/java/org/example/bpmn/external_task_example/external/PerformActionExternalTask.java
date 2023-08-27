@@ -8,7 +8,7 @@ import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskHandler;
 import org.camunda.bpm.client.task.ExternalTaskService;
-import org.example.bpmn.model.ProcessVariables;
+import org.example.model.ProcessVariables;
 import org.springframework.stereotype.Component;
 
 @Slf4j

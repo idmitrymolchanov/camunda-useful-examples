@@ -1,4 +1,4 @@
-package org.example.bpmn.model;
+package org.example.model;
 
 import lombok.experimental.UtilityClass;
 
@@ -14,5 +14,8 @@ public class ProcessVariables {
   public static final String ACTION_FROM_LIST = "actionFromList";
   public static final String IS_PROCESS_EXCEPTION = "isProcessException";
   public static final String REJECT_REASON = "rejectReason";
+
+  // process-element-example
+  public static final String EXAMPLE_COLLECTION = "exampleCollection";
 
 }

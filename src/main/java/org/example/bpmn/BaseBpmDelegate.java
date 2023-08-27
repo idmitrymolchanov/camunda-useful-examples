@@ -3,7 +3,7 @@ package org.example.bpmn;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.example.bpmn.utils.BpmLogActivityTypeEnum;
+import org.example.utils.BpmLogActivityTypeEnum;
 import org.example.exception.BpmActivityException;
 
 @Slf4j
