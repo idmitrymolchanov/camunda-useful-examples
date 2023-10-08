@@ -11,7 +11,8 @@ public class LogEndEventDelegate implements JavaDelegate {
 
   @Override
   public void execute(DelegateExecution execution) throws Exception {
-
+    var endingReason = execution.getVariableLocal("endingReason").toString();
+    log.info("businessKey: {}, reject reason: {}", execution.getBusinessKey(), endingReason);
   }
 
 }

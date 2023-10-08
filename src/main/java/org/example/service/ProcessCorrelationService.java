@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.MismatchingMessageCorrelationException;
 import org.camunda.bpm.engine.RuntimeService;
+import org.example.model.KafkaExampleModel;
+import org.example.model.ProcessVariables;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +25,7 @@ public class ProcessCorrelationService {
   }
 
   @Transactional
-  public void correlateProcess(UUID businessKey, String messageName) {
+  public void correlateProcessByKey(UUID businessKey, String messageName) {
     try {
       runtimeService.createMessageCorrelation(messageName)
           .processInstanceBusinessKey(businessKey.toString())
@@ -31,6 +33,13 @@ public class ProcessCorrelationService {
     } catch (MismatchingMessageCorrelationException e) {
       log.error("process instance with business key {} not found", businessKey);
     }
+  }
+
+  public void correlateProcessByCorrelationId(String correlationId, KafkaExampleModel model) {
+    runtimeService.createMessageCorrelation(model.getMessageName())
+        .localVariableEquals(ProcessVariables.CORRELATION_ID, correlationId)
+        .setVariable(ProcessVariables.CREATE_ERROR, model.isCreateError())
+        .correlate();
   }
 
   public void startProcess(String processId, UUID businessKey, Map<String, Object> variables) {

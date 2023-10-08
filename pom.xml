@@ -45,6 +45,14 @@
         </dependency>
         <!-- endregion -->
 
+        <!-- region kafka -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+        <!-- endregion -->
+
         <!-- region camunda -->
         <dependency>
             <groupId>org.camunda.bpm</groupId>

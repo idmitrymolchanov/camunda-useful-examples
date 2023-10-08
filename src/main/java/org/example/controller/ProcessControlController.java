@@ -27,7 +27,7 @@ public class ProcessControlController {
   public void correlateByBusinessKey(
       @RequestParam UUID businessKey,
       @RequestParam String messageName) {
-    correlationService.correlateProcess(businessKey, messageName);
+    correlationService.correlateProcessByKey(businessKey, messageName);
   }
 
   @PostMapping(value = "/start/{processId}")

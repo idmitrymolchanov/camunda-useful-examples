@@ -1,10 +1,9 @@
 spring:
   application:
-    name: mlc-loan-application
+    name: process-element-example
 
 server:
   port: 8081
-  # for ResponseStatusException messages
   error:
     include-message: always
 

@@ -17,5 +17,9 @@ public class ProcessVariables {
 
   // process-element-example
   public static final String EXAMPLE_COLLECTION = "exampleCollection";
+  public static final String CORRELATION_ID = "correlationId";
+  public static final String CREATE_ERROR = "createError";
+  public static final String CORRELATE_DECISION = "correlateDecision";
+  public static final String MAIN_PROCESS_EXAMPLE_VAR = "mainProcessExampleVar";
 
 }
