@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="GetDmnResultDefinition" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
+  <decision id="GetDmnResult" name="EXAMPLE" camunda:historyTimeToLive="P30D">
+    <decisionTable id="DecisionTable_1n4hzrt" hitPolicy="FIRST">
+      <input id="Input_1" label="groovyTestVal существует?" biodi:width="347">
+        <inputExpression id="InputExpression_1" typeRef="boolean">
+          <text>is defined(groovyTestVal) and groovyTestVal</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Результат" name="dmnResult" typeRef="string" />
+      <rule id="DecisionRule_1lqpa5p">
+        <inputEntry id="UnaryTests_0tyo1ie">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0vigeti">
+          <text>"YES"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0up5mjs">
+        <inputEntry id="UnaryTests_0fxj9c4">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1o1idzh">
+          <text>"NO"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="GetDmnResult">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

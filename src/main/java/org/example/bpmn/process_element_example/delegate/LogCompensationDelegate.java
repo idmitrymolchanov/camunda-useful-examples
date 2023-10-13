@@ -11,7 +11,7 @@ public class LogCompensationDelegate implements JavaDelegate {
 
   @Override
   public void execute(DelegateExecution execution) throws Exception {
-
+    log.info("businessKey: {}, compensation succeed", execution.getBusinessKey());
   }
 
 }

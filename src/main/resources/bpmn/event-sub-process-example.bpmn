@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0gxpj7l" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
-  <bpmn:process id="event-sub-process-example" isExecutable="true">
+  <bpmn:process id="event-sub-process-example" isExecutable="true" camunda:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="старт" camunda:asyncAfter="true" camunda:exclusive="false">
       <bpmn:extensionElements>
         <camunda:executionListener expression="${execution.setVariable(&#34;actionNumber&#34;, &#34;action-0&#34;)}" event="start" />
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0knfamz</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:endEvent id="Event_1w6o13z" name="завершение">
+    <bpmn:endEvent id="Event_1w6o13z" name="завершение" camunda:asyncAfter="true" camunda:exclusive="false">
       <bpmn:incoming>Flow_0bjk23p</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0knfamz" sourceRef="StartEvent_1" targetRef="PerformFirstActionTask" />
@@ -26,7 +26,7 @@
         <bpmn:incoming>Flow_0patanb</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0patanb" sourceRef="SendActionStatusTask" targetRef="Event_0fom9ns" />
-      <bpmn:serviceTask id="SendActionStatusTask" name="отправить статус" camunda:delegateExpression="${SendActionStatusDelegate}">
+      <bpmn:serviceTask id="SendActionStatusTask" name="отправить статус" camunda:asyncAfter="true" camunda:exclusive="false" camunda:delegateExpression="${SendActionStatusDelegate}">
         <bpmn:incoming>Flow_17qdum7</bpmn:incoming>
         <bpmn:outgoing>Flow_0patanb</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -35,11 +35,11 @@
       <bpmn:incoming>Flow_0knfamz</bpmn:incoming>
       <bpmn:outgoing>Flow_1d0r989</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="PerformSecondActionTask" name="выполнить действие 2" camunda:asyncAfter="true" camunda:exclusive="false">
+    <bpmn:serviceTask id="PerformSecondActionTask" name="выполнить действие 2" camunda:asyncAfter="true" camunda:exclusive="false" camunda:delegateExpression="${PerformActionDelegate}">
       <bpmn:incoming>Flow_1d0r989</bpmn:incoming>
       <bpmn:outgoing>Flow_0keho7p</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="PerformThirdActionTask" name="выполнить действие 3" camunda:asyncAfter="true" camunda:exclusive="false">
+    <bpmn:serviceTask id="PerformThirdActionTask" name="выполнить действие 3" camunda:asyncAfter="true" camunda:exclusive="false" camunda:delegateExpression="${PerformActionDelegate}">
       <bpmn:incoming>Flow_0keho7p</bpmn:incoming>
       <bpmn:outgoing>Flow_0bjk23p</bpmn:outgoing>
     </bpmn:serviceTask>

@@ -21,7 +21,7 @@ public class KafkaConsumerConfiguration {
   private final ProcessCorrelationService correlationService;
 
   @Bean
-  public Consumer<Message<KafkaExampleModel>> receiveTestMessage() {
+  public Consumer<Message<KafkaExampleModel>> consumeExampleMessage() {
     return message -> {
       Acknowledgment acknowledgment = message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class);
       try {

@@ -21,15 +21,15 @@ public class KafkaProducerConfiguration {
 
   private final StreamBridge streamBridge;
 
-  private static final String BINDING_NAME = "app-status-producer-out-0";
-  public static final String CORRELATION_HEADER = "app-status-producer-out-0";
+  private static final String BINDING_NAME = "test-producer-out-0";
+  public static final String CORRELATION_HEADER = "correlationIdHeader";
 
   @Transactional
-  public void sendExampleMessage(KafkaExampleModel applicationEvent, UUID correlationId) {
+  public void sendExampleMessage(KafkaExampleModel exampleModel, UUID correlationId) {
     Message<KafkaExampleModel> message =
         MessageBuilder
-            .withPayload(applicationEvent)
-            .setHeader(KafkaHeaders.MESSAGE_KEY, applicationEvent.getId().toString()
+            .withPayload(exampleModel)
+            .setHeader(KafkaHeaders.KEY, exampleModel.getId().toString()
                 .getBytes(StandardCharsets.UTF_8))
             .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
             .setHeader(CORRELATION_HEADER, correlationId.toString())
