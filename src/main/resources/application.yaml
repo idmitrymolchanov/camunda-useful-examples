@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: process-element-example
+  cloud:
+    function:
+      definition: consumeExampleMessage
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+          auto-create-topics: true
+      bindings:
+        test-producer-out-0:
+          destination: "bpm.test.topic"
+        consumeExampleMessage-in-0:
+          destination: "bpm.test.topic"
+          contentType: application/json
+          group: ${spring.application.name}-group
+          useNativeDecoding: true
+          consumer:
+            autoCommitOffset: false
+            startOffset: earliest
+            ackMode: MANUAL
+            backOffInitialInterval: 5000
+            maxAttempts: 3
+            enableDlq: false
+
+server:
+  port: 8081
+  error:
+    include-message: always
+
+camunda:
+  bpm:
+    admin-user:
+      id: demo
+      firstName: demo
+      password: demo
+    database:
+      schema-update: true
+    auto-deployment-enabled: true
+    history-level: none
