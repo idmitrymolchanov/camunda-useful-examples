@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0gxpj7l" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
-  <bpmn:process id="external-task-example" isExecutable="true" camunda:historyTimeToLive="P30D">
+  <bpmn:process id="external-task-example-pa" isExecutable="true" camunda:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="старт" camunda:asyncAfter="true" camunda:exclusive="false">
       <bpmn:extensionElements>
         <camunda:executionListener expression="${execution.setVariable(&#34;exampleInputVariable&#34;, &#34;action-0&#34;)}" event="start" />
@@ -75,7 +75,7 @@
   </bpmn:process>
   <bpmn:error id="Error_0c98j2h" name="STATUS_CODE_ERROR" errorCode="STATUS_CODE_ERROR" camunda:errorMessage="error status from response" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="external-task-example">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="external-task-example-pa">
       <bpmndi:BPMNEdge id="Flow_0i2nc2p_di" bpmnElement="Flow_0i2nc2p">
         <di:waypoint x="1040" y="270" />
         <di:waypoint x="1040" y="340" />

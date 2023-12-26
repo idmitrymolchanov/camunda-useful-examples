@@ -1,4 +1,4 @@
-package org.example.bpmn.external_task_example.external;
+package org.example.bpmn.external_task_example_pa.external;
 
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;

@@ -19,7 +19,7 @@ public class ProcessVariables {
   public static final String EXAMPLE_COLLECTION = "exampleCollection";
   public static final String ONGOING_PROCESS = "ongoingProcess";
   public static final String CREATE_ERROR = "createError";
-  public static final String CORRELATE_DECISION = "correlateDecision";
+  public static final String VARIABLE_FROM_SUB_PROCESS = "variableFromSubProcess";
   public static final String MAIN_PROCESS_EXAMPLE_VAR = "mainProcessExampleVar";
 
 }

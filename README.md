@@ -16,7 +16,7 @@ get started + useful non-standard schemes
 - start curl example
 
 
-      curl --location 'http://localhost:8081/start?processId=PROCESS_ELEMENT_EXAMPLE&businessKey=f9a63a48-9e65-11ee-83f7-3aa12c99ecd2' \
+      curl --location 'http://localhost:8081/start?processId=ALL_ELEMENTS_EXAMPLE_PA&businessKey=f9a63a48-9e65-11ee-83f7-3aa12c99ecd2' \
       --header 'Content-Type: application/json' \
       --data '{
       "var1" : "val1"

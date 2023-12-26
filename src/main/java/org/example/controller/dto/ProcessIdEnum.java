@@ -7,12 +7,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ProcessIdEnum {
 
-  // TODO -> rename process's ids
-  PROCESS_ELEMENT_EXAMPLE("process-element-example"), // all-elements-example-pa
-  SUB_PROCESS_EXAMPLE("sub_process_example"), // all-elements-example-call-activity-pa
-  EVENTED_SUB_PROCESS_EXAMPLE("evented_sub_process_example"), // all-elements-example-event-sub-pa
-  EVENT_SUB_PROCESS_EXAMPLE("event-sub-process-example"), // conditional-event-sub-example-pa
-  EXTERNAL_TASK_EXAMPLE("external-task-example"); // external-task-example-pa
+  CONDITIONAL_EVENT_SUB_EXAMPLE_PA("conditional-event-sub-example-pa"),
+  EXTERNAL_TASK_EXAMPLE_PA("external-task-example-pa"),
+
+  // all-elements-example-pa processes
+  ALL_ELEMENTS_EXAMPLE_PA("all-elements-example-pa"),
+  ALL_ELEMENTS_EXAMPLE_CALL_ACTIVITY_PA("all-elements-example-call-activity-pa"),
+  ALL_ELEMENTS_EXAMPLE_EVENT_SUB_PA("all-elements-example-event-sub-pa");
 
   private final String value;
 

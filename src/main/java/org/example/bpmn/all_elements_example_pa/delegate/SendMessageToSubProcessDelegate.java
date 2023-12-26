@@ -1,4 +1,4 @@
-package org.example.bpmn.process_element_example.delegate;
+package org.example.bpmn.all_elements_example_pa.delegate;
 
 import java.util.Map;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class SendMessageToSubProcessDelegate implements JavaDelegate {
   @Override
   public void execute(DelegateExecution execution) throws Exception {
     var businessKey = UUID.fromString(execution.getBusinessKey());
-    var processName = ProcessIdEnum.EVENTED_SUB_PROCESS_EXAMPLE;
+    var processName = ProcessIdEnum.ALL_ELEMENTS_EXAMPLE_EVENT_SUB_PA;
     var id = bpmnService.startProcess(processName, businessKey, Map.of());
     log.info("subprocess {} started with processId: {} and businessKey: {}", processName, id, businessKey);
   }

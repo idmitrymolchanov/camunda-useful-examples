@@ -1,4 +1,4 @@
-package org.example.bpmn.process_element_example.delegate;
+package org.example.bpmn.all_elements_example_pa.delegate;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class SendMessageToParentDelegate implements JavaDelegate {
     bpmnService.correlateProcessByKeyWithVariables(
         businessKey,
         RECEIVE_MESSAGE,
-        Map.of(ProcessVariables.CORRELATE_DECISION, "OK")
+        Map.of(ProcessVariables.VARIABLE_FROM_SUB_PROCESS, "OK")
     );
   }
 

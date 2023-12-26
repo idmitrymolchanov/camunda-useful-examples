@@ -1,4 +1,4 @@
-package org.example.bpmn.process_element_example.listener;
+package org.example.bpmn.all_elements_example_pa.listener;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

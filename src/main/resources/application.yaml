@@ -1,6 +1,7 @@
 spring:
   application:
-    name: process-element-example
+    name: all-elements-example-pa
+
   cloud:
     function:
       definition: consumeExampleMessage

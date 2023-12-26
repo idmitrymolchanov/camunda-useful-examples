@@ -1,4 +1,4 @@
-package org.example.bpmn.event_sub_process_example;
+package org.example.bpmn.conditional_event_sub_example_pa;
 
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0gxpj7l" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:collaboration id="Collaboration_1txogmy">
-    <bpmn:participant id="Participant_18908li" processRef="process-element-example" />
-    <bpmn:participant id="Participant_1kpd7fy" processRef="evented_sub_process_example" />
-    <bpmn:participant id="Participant_007sit1" processRef="sub_process_example" />
+    <bpmn:participant id="Participant_18908li" processRef="all-elements-example-pa" />
+    <bpmn:participant id="Participant_1kpd7fy" processRef="all-elements-example-event-sub-pa" />
+    <bpmn:participant id="Participant_007sit1" processRef="all-elements-example-call-activity-pa" />
     <bpmn:messageFlow id="Flow_16zlssm" sourceRef="Activity_10oxxes" targetRef="Activity_13y4oo2" />
   </bpmn:collaboration>
-  <bpmn:process id="process-element-example" isExecutable="true" camunda:historyTimeToLive="P30D">
+  <bpmn:process id="all-elements-example-pa" isExecutable="true" camunda:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="старт" camunda:asyncAfter="true" camunda:exclusive="false">
       <bpmn:extensionElements>
         <camunda:executionListener expression="${execution.setVariable(&#34;actionNumber&#34;, &#34;action-0&#34;)}" event="start" />
@@ -25,7 +25,13 @@
       <bpmn:outgoing>Flow_1bzroek</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:exclusive="false" camunda:collection="exampleCollection" camunda:elementVariable="item" />
     </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_07rrta5" camunda:asyncBefore="true" camunda:exclusive="false">
+    <bpmn:endEvent id="bpmErrorEndEvent" camunda:asyncBefore="true" camunda:exclusive="false">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="endingReason">BPM_ERROR</camunda:inputParameter>
+        </camunda:inputOutput>
+        <camunda:executionListener delegateExpression="${LogEndEventListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_16x3901</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:subProcess id="Activity_1qebgq5" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:exclusive="false">
@@ -82,7 +88,7 @@
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1ltwpx5" errorRef="Error_1dte3gi" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1bzroek" sourceRef="Activity_1ojaxfj" targetRef="Activity_1qebgq5" />
-    <bpmn:sequenceFlow id="Flow_16x3901" name="завершение по внутренней ошибке" sourceRef="Event_0qqbmp5" targetRef="Event_07rrta5" />
+    <bpmn:sequenceFlow id="Flow_16x3901" name="завершение по внутренней ошибке" sourceRef="Event_0qqbmp5" targetRef="bpmErrorEndEvent" />
     <bpmn:sequenceFlow id="Flow_0knfamz" sourceRef="StartEvent_1" targetRef="PerformFirstActionTask" />
     <bpmn:sequenceFlow id="Flow_1d0r989" sourceRef="PerformFirstActionTask" targetRef="Activity_1ojaxfj" />
     <bpmn:scriptTask id="Activity_0lu3fv9" name="пример выполнения скрипта" scriptFormat="groovy" camunda:resultVariable="groovyTestVal">
@@ -119,20 +125,15 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
         <bpmn:incoming>Flow_1hocrn4</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:subProcess id="Activity_1em7556" triggeredByEvent="true">
-        <bpmn:serviceTask id="Activity_06ab7js" name="Запуск эскалации" camunda:asyncAfter="true" camunda:exclusive="false" camunda:delegateExpression="${ExampleDelegate}">
-          <bpmn:incoming>Flow_1kvcffb</bpmn:incoming>
-          <bpmn:outgoing>Flow_0kcrhfm</bpmn:outgoing>
-        </bpmn:serviceTask>
         <bpmn:endEvent id="Event_13t40ms">
-          <bpmn:incoming>Flow_0kcrhfm</bpmn:incoming>
+          <bpmn:incoming>Flow_1kvcffb</bpmn:incoming>
           <bpmn:escalationEventDefinition id="EscalationEventDefinition_1abvt07" escalationRef="Escalation_1pya4wj" />
         </bpmn:endEvent>
         <bpmn:startEvent id="Event_1fjn1yl" camunda:asyncAfter="true" camunda:exclusive="false">
           <bpmn:outgoing>Flow_1kvcffb</bpmn:outgoing>
           <bpmn:messageEventDefinition id="MessageEventDefinition_1vg2c6z" messageRef="Message_0q3giox" />
         </bpmn:startEvent>
-        <bpmn:sequenceFlow id="Flow_1kvcffb" sourceRef="Event_1fjn1yl" targetRef="Activity_06ab7js" />
-        <bpmn:sequenceFlow id="Flow_0kcrhfm" sourceRef="Activity_06ab7js" targetRef="Event_13t40ms" />
+        <bpmn:sequenceFlow id="Flow_1kvcffb" sourceRef="Event_1fjn1yl" targetRef="Event_13t40ms" />
       </bpmn:subProcess>
       <bpmn:startEvent id="Event_0n75f3x">
         <bpmn:outgoing>Flow_07nngz8</bpmn:outgoing>
@@ -140,38 +141,12 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
       <bpmn:sequenceFlow id="Flow_1hocrn4" sourceRef="Activity_15n3mok" targetRef="Event_1swajqv" />
       <bpmn:sequenceFlow id="Flow_07nngz8" sourceRef="Event_0n75f3x" targetRef="Activity_15n3mok" />
     </bpmn:subProcess>
-    <bpmn:boundaryEvent id="Event_1k5v4p8" attachedToRef="Activity_11cp3eh">
-      <bpmn:outgoing>Flow_1vrjyb7</bpmn:outgoing>
-      <bpmn:escalationEventDefinition id="EscalationEventDefinition_0jr2x79" escalationRef="Escalation_1pya4wj" />
-    </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="Event_136tia5" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:exclusive="false" cancelActivity="false" attachedToRef="Activity_11cp3eh">
-      <bpmn:outgoing>Flow_00vfq7r</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_0imeb9e">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT3M</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_00vfq7r" sourceRef="Event_136tia5" targetRef="Activity_0lu3fv9" />
-    <bpmn:boundaryEvent id="CompensationEvent" attachedToRef="Activity_11cp3eh">
-      <bpmn:compensateEventDefinition id="CompensateEventDefinition_1dwif6w" />
-    </bpmn:boundaryEvent>
-    <bpmn:endEvent id="Event_0bsrot0" camunda:asyncBefore="true" camunda:exclusive="false">
-      <bpmn:incoming>Flow_0azzlh9</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1vrjyb7" sourceRef="Event_1k5v4p8" targetRef="Activity_0wkosun" />
+    <bpmn:sequenceFlow id="Flow_1vrjyb7" sourceRef="Event_1k5v4p8" targetRef="EscalationEndEvent" />
     <bpmn:endEvent id="Event_1npd9iw" camunda:asyncBefore="true" camunda:exclusive="false">
       <bpmn:incoming>Flow_15t9eoq</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:serviceTask id="CompensationTask" name="пример компенсационных действий" isForCompensation="true" camunda:delegateExpression="${LogCompensationDelegate}" />
-    <bpmn:serviceTask id="Activity_0wkosun" name="завершение по эскалации" camunda:delegateExpression="${LogEndEventDelegate}">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="endingReason">ESCALATION_ENDING</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1vrjyb7</bpmn:incoming>
-      <bpmn:outgoing>Flow_0azzlh9</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0azzlh9" sourceRef="Activity_0wkosun" targetRef="Event_0bsrot0" />
     <bpmn:businessRuleTask id="Activity_0ninrg0" name="пример DMN" camunda:asyncAfter="true" camunda:exclusive="false" camunda:resultVariable="dmnResult" camunda:decisionRef="GetDmnResult" camunda:mapDecisionResult="singleEntry">
       <bpmn:incoming>Flow_0msx4yc</bpmn:incoming>
       <bpmn:outgoing>Flow_15sk302</bpmn:outgoing>
@@ -199,7 +174,7 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.getVariable("dmnResult") != null}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_15sk302" sourceRef="Activity_0ninrg0" targetRef="Gateway_1tugbfn" />
-    <bpmn:callActivity id="Activity_04ehzam" name="пример вызова подпроцесса" camunda:asyncAfter="true" camunda:exclusive="false" calledElement="sub_process_example">
+    <bpmn:callActivity id="Activity_04ehzam" name="пример вызова подпроцесса" camunda:asyncAfter="true" camunda:exclusive="false" calledElement="all-elements-example-call-activity-pa">
       <bpmn:extensionElements>
         <camunda:in businessKey="#{execution.processBusinessKey}" />
       </bpmn:extensionElements>
@@ -222,13 +197,13 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
     <bpmn:sequenceFlow id="Flow_1v32720" sourceRef="Event_058rpw5" targetRef="Activity_13y4oo2" />
     <bpmn:inclusiveGateway id="Gateway_1sna64i">
       <bpmn:incoming>Flow_19x8qu8</bpmn:incoming>
-      <bpmn:incoming>Flow_07eazx5</bpmn:incoming>
       <bpmn:incoming>Flow_1xc3sc9</bpmn:incoming>
+      <bpmn:incoming>Flow_0wmlnbg</bpmn:incoming>
       <bpmn:outgoing>Flow_0338gwi</bpmn:outgoing>
     </bpmn:inclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0338gwi" sourceRef="Gateway_1sna64i" targetRef="Activity_11cp3eh" />
     <bpmn:sequenceFlow id="Flow_19x8qu8" sourceRef="Activity_1q41ioi" targetRef="Gateway_1sna64i" />
-    <bpmn:sequenceFlow id="Flow_07eazx5" sourceRef="Activity_13y4oo2" targetRef="Gateway_1sna64i" />
+    <bpmn:sequenceFlow id="Flow_07eazx5" sourceRef="Activity_13y4oo2" targetRef="Event_0mhk9vb" />
     <bpmn:inclusiveGateway id="Gateway_08hbcsa" default="Flow_1xc3sc9">
       <bpmn:incoming>Flow_11qeesx</bpmn:incoming>
       <bpmn:outgoing>Flow_1xc3sc9</bpmn:outgoing>
@@ -243,7 +218,13 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${ongoingProcess == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_11qeesx" sourceRef="Activity_1qebgq5" targetRef="Gateway_08hbcsa" />
-    <bpmn:endEvent id="Event_03cqsgp" camunda:asyncBefore="true" camunda:exclusive="false">
+    <bpmn:endEvent id="ConditionalEndEvent" camunda:asyncBefore="true" camunda:exclusive="false">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${LogEndEventListener}" event="end" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="endingReason">TERMINATE_ALL</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1tck660</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_1cgteby" />
     </bpmn:endEvent>
@@ -253,10 +234,40 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
         <bpmn:condition xsi:type="bpmn:tFormalExpression">${execution.getVariable("interruptProcess") != null}</bpmn:condition>
       </bpmn:conditionalEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_1tck660" name="принудительное завершение по условию" sourceRef="Event_194uac5" targetRef="Event_03cqsgp" />
+    <bpmn:sequenceFlow id="Flow_1tck660" name="принудительное завершение по условию" sourceRef="Event_194uac5" targetRef="ConditionalEndEvent" />
+    <bpmn:sequenceFlow id="Flow_0wmlnbg" sourceRef="Event_0mhk9vb" targetRef="Gateway_1sna64i" />
+    <bpmn:intermediateCatchEvent id="Event_0mhk9vb">
+      <bpmn:incoming>Flow_07eazx5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wmlnbg</bpmn:outgoing>
+      <bpmn:conditionalEventDefinition id="ConditionalEventDefinition_0i88m7f">
+        <bpmn:condition xsi:type="bpmn:tFormalExpression">${execution.getVariable("variableFromSubProcess") != null}</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="EscalationEndEvent" camunda:asyncBefore="true" camunda:exclusive="false">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${LogEndEventListener}" event="end" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="endingReason">ESCALATION</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1vrjyb7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="CompensationEvent" attachedToRef="Activity_11cp3eh">
+      <bpmn:compensateEventDefinition id="CompensateEventDefinition_1dwif6w" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_136tia5" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:exclusive="false" cancelActivity="false" attachedToRef="Activity_11cp3eh">
+      <bpmn:outgoing>Flow_00vfq7r</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0imeb9e">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT3M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_1k5v4p8" attachedToRef="Activity_11cp3eh">
+      <bpmn:outgoing>Flow_1vrjyb7</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="EscalationEventDefinition_0jr2x79" escalationRef="Escalation_1pya4wj" />
+    </bpmn:boundaryEvent>
     <bpmn:association id="Association_0vw7vjr" associationDirection="One" sourceRef="CompensationEvent" targetRef="CompensationTask" />
   </bpmn:process>
-  <bpmn:process id="evented_sub_process_example" isExecutable="true" camunda:historyTimeToLive="P30D">
+  <bpmn:process id="all-elements-example-event-sub-pa" isExecutable="true" camunda:historyTimeToLive="P30D">
     <bpmn:startEvent id="Event_114zk15" name="старт по событию в родительском процессе" camunda:asyncAfter="true" camunda:exclusive="false">
       <bpmn:outgoing>Flow_1uva1m4</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0ybjywu" messageRef="Message_0x071vw" />
@@ -274,7 +285,7 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
   </bpmn:process>
-  <bpmn:process id="sub_process_example" isExecutable="true" camunda:historyTimeToLive="P30D">
+  <bpmn:process id="all-elements-example-call-activity-pa" isExecutable="true" camunda:historyTimeToLive="P30D">
     <bpmn:startEvent id="Event_0wcrhcb" name="старт по вызову call-activity" camunda:asyncAfter="true" camunda:exclusive="false">
       <bpmn:outgoing>Flow_17t4ro8</bpmn:outgoing>
     </bpmn:startEvent>
@@ -310,9 +321,95 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
       <bpmndi:BPMNShape id="Participant_18908li_di" bpmnElement="Participant_18908li" isHorizontal="true">
         <dc:Bounds x="160" y="80" width="2940" height="740" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0azzlh9_di" bpmnElement="Flow_0azzlh9">
-        <di:waypoint x="1760" y="250" />
-        <di:waypoint x="1812" y="250" />
+      <bpmndi:BPMNEdge id="Flow_1tck660_di" bpmnElement="Flow_1tck660">
+        <di:waypoint x="1470" y="342" />
+        <di:waypoint x="1470" y="268" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1379" y="290" width="84" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11qeesx_di" bpmnElement="Flow_11qeesx">
+        <di:waypoint x="1170" y="507" />
+        <di:waypoint x="1265" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09kyd21_di" bpmnElement="Flow_09kyd21">
+        <di:waypoint x="1290" y="482" />
+        <di:waypoint x="1290" y="400" />
+        <di:waypoint x="1370" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13wy2fd_di" bpmnElement="Flow_13wy2fd">
+        <di:waypoint x="1290" y="532" />
+        <di:waypoint x="1290" y="616" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xc3sc9_di" bpmnElement="Flow_1xc3sc9">
+        <di:waypoint x="1315" y="507" />
+        <di:waypoint x="1535" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07eazx5_di" bpmnElement="Flow_07eazx5">
+        <di:waypoint x="1470" y="630" />
+        <di:waypoint x="1542" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19x8qu8_di" bpmnElement="Flow_19x8qu8">
+        <di:waypoint x="1470" y="400" />
+        <di:waypoint x="1560" y="400" />
+        <di:waypoint x="1560" y="482" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0338gwi_di" bpmnElement="Flow_0338gwi">
+        <di:waypoint x="1585" y="507" />
+        <di:waypoint x="1670" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v32720_di" bpmnElement="Flow_1v32720">
+        <di:waypoint x="1308" y="634" />
+        <di:waypoint x="1370" y="634" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15t9eoq_di" bpmnElement="Flow_15t9eoq">
+        <di:waypoint x="2280" y="565" />
+        <di:waypoint x="2280" y="634" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2191" y="583" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0msx4yc_di" bpmnElement="Flow_0msx4yc">
+        <di:waypoint x="2280" y="507" />
+        <di:waypoint x="2340" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15sk302_di" bpmnElement="Flow_15sk302">
+        <di:waypoint x="2440" y="507" />
+        <di:waypoint x="2495" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1klfbfw_di" bpmnElement="Flow_1klfbfw">
+        <di:waypoint x="2520" y="482" />
+        <di:waypoint x="2520" y="410" />
+        <di:waypoint x="2760" y="410" />
+        <di:waypoint x="2760" y="482" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y7msnw_di" bpmnElement="Flow_0y7msnw">
+        <di:waypoint x="2545" y="507" />
+        <di:waypoint x="2590" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1flfn4g_di" bpmnElement="Flow_1flfn4g">
+        <di:waypoint x="2785" y="507" />
+        <di:waypoint x="2842" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17tu2xv_di" bpmnElement="Flow_17tu2xv">
+        <di:waypoint x="2878" y="507" />
+        <di:waypoint x="2972" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11f5i7f_di" bpmnElement="Flow_11f5i7f">
+        <di:waypoint x="2100" y="507" />
+        <di:waypoint x="2180" y="507" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vrjyb7_di" bpmnElement="Flow_1vrjyb7">
+        <di:waypoint x="1710" y="342" />
+        <di:waypoint x="1710" y="268" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00vfq7r_di" bpmnElement="Flow_00vfq7r">
+        <di:waypoint x="2070" y="342" />
+        <di:waypoint x="2070" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o4x5f6_di" bpmnElement="Flow_0o4x5f6">
+        <di:waypoint x="2690" y="507" />
+        <di:waypoint x="2735" y="507" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d0r989_di" bpmnElement="Flow_1d0r989">
         <di:waypoint x="450" y="507" />
@@ -321,10 +418,6 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
       <bpmndi:BPMNEdge id="Flow_0knfamz_di" bpmnElement="Flow_0knfamz">
         <di:waypoint x="275" y="507" />
         <di:waypoint x="350" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11qeesx_di" bpmnElement="Flow_11qeesx">
-        <di:waypoint x="1170" y="507" />
-        <di:waypoint x="1265" y="507" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_16x3901_di" bpmnElement="Flow_16x3901">
         <di:waypoint x="1170" y="344" />
@@ -337,92 +430,9 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
         <di:waypoint x="620" y="507" />
         <di:waypoint x="710" y="507" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xc3sc9_di" bpmnElement="Flow_1xc3sc9">
-        <di:waypoint x="1315" y="507" />
-        <di:waypoint x="1535" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1v32720_di" bpmnElement="Flow_1v32720">
-        <di:waypoint x="1308" y="634" />
-        <di:waypoint x="1370" y="634" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0338gwi_di" bpmnElement="Flow_0338gwi">
-        <di:waypoint x="1585" y="507" />
-        <di:waypoint x="1670" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_19x8qu8_di" bpmnElement="Flow_19x8qu8">
-        <di:waypoint x="1470" y="400" />
-        <di:waypoint x="1560" y="400" />
-        <di:waypoint x="1560" y="482" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07eazx5_di" bpmnElement="Flow_07eazx5">
-        <di:waypoint x="1470" y="630" />
-        <di:waypoint x="1560" y="630" />
+      <bpmndi:BPMNEdge id="Flow_0wmlnbg_di" bpmnElement="Flow_0wmlnbg">
+        <di:waypoint x="1560" y="612" />
         <di:waypoint x="1560" y="532" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15t9eoq_di" bpmnElement="Flow_15t9eoq">
-        <di:waypoint x="2280" y="565" />
-        <di:waypoint x="2280" y="634" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2191" y="583" width="78" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11f5i7f_di" bpmnElement="Flow_11f5i7f">
-        <di:waypoint x="2100" y="507" />
-        <di:waypoint x="2180" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_13wy2fd_di" bpmnElement="Flow_13wy2fd">
-        <di:waypoint x="1290" y="532" />
-        <di:waypoint x="1290" y="616" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_09kyd21_di" bpmnElement="Flow_09kyd21">
-        <di:waypoint x="1290" y="482" />
-        <di:waypoint x="1290" y="400" />
-        <di:waypoint x="1370" y="400" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1vrjyb7_di" bpmnElement="Flow_1vrjyb7">
-        <di:waypoint x="1710" y="342" />
-        <di:waypoint x="1710" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_00vfq7r_di" bpmnElement="Flow_00vfq7r">
-        <di:waypoint x="2070" y="342" />
-        <di:waypoint x="2070" y="290" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0msx4yc_di" bpmnElement="Flow_0msx4yc">
-        <di:waypoint x="2280" y="507" />
-        <di:waypoint x="2340" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17tu2xv_di" bpmnElement="Flow_17tu2xv">
-        <di:waypoint x="2878" y="507" />
-        <di:waypoint x="2972" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15sk302_di" bpmnElement="Flow_15sk302">
-        <di:waypoint x="2440" y="507" />
-        <di:waypoint x="2495" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0y7msnw_di" bpmnElement="Flow_0y7msnw">
-        <di:waypoint x="2545" y="507" />
-        <di:waypoint x="2590" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1flfn4g_di" bpmnElement="Flow_1flfn4g">
-        <di:waypoint x="2785" y="507" />
-        <di:waypoint x="2842" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1klfbfw_di" bpmnElement="Flow_1klfbfw">
-        <di:waypoint x="2520" y="482" />
-        <di:waypoint x="2520" y="410" />
-        <di:waypoint x="2760" y="410" />
-        <di:waypoint x="2760" y="482" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0o4x5f6_di" bpmnElement="Flow_0o4x5f6">
-        <di:waypoint x="2690" y="507" />
-        <di:waypoint x="2735" y="507" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1tck660_di" bpmnElement="Flow_1tck660">
-        <di:waypoint x="1470" y="342" />
-        <di:waypoint x="1470" y="268" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1379" y="290" width="84" height="40" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="239" y="489" width="36" height="36" />
@@ -433,59 +443,23 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
       <bpmndi:BPMNShape id="Activity_0wyc0eo_di" bpmnElement="PerformFirstActionTask">
         <dc:Bounds x="350" y="467" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0x3g9pl_di" bpmnElement="Gateway_08hbcsa">
-        <dc:Bounds x="1265" y="482" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_016d57y_di" bpmnElement="Gateway_1sna64i">
-        <dc:Bounds x="1535" y="482" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1pya96z_di" bpmnElement="Event_058rpw5">
-        <dc:Bounds x="1272" y="616" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0zf3e5n_di" bpmnElement="Activity_04ehzam">
-        <dc:Bounds x="2180" y="467" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1tugbfn_di" bpmnElement="Gateway_1tugbfn" isMarkerVisible="true">
-        <dc:Bounds x="2495" y="482" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1meux3u_di" bpmnElement="Gateway_1meux3u" isMarkerVisible="true">
-        <dc:Bounds x="2735" y="482" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0v2q17l_di" bpmnElement="Event_0brdw8e">
-        <dc:Bounds x="2842" y="489" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1w6o13z_di" bpmnElement="Event_1w6o13z">
         <dc:Bounds x="2972" y="489" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="2959" y="532" width="63" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0vbrzgr_di" bpmnElement="Activity_0ninrg0">
-        <dc:Bounds x="2340" y="467" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1qdh6zd_di" bpmnElement="Activity_1ojaxfj">
         <dc:Bounds x="520" y="467" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_07air5e_di" bpmnElement="Activity_0wkosun">
-        <dc:Bounds x="1660" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1yum11i_di" bpmnElement="Activity_0lu3fv9">
-        <dc:Bounds x="2020" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1kjzc5d_di" bpmnElement="CompensationTask">
-        <dc:Bounds x="1900" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1npd9iw_di" bpmnElement="Event_1npd9iw">
-        <dc:Bounds x="2262" y="634" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0hqr2qz_di" bpmnElement="Event_03cqsgp">
-        <dc:Bounds x="1452" y="232" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0bsrot0_di" bpmnElement="Event_0bsrot0">
-        <dc:Bounds x="1812" y="232" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_07rrta5_di" bpmnElement="Event_07rrta5">
+      <bpmndi:BPMNShape id="Event_07rrta5_di" bpmnElement="bpmErrorEndEvent">
         <dc:Bounds x="1152" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ovipdz_di" bpmnElement="Event_0mhk9vb">
+        <dc:Bounds x="1542" y="612" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0bsrot0_di" bpmnElement="EscalationEndEvent">
+        <dc:Bounds x="1692" y="232" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1qebgq5_di" bpmnElement="Activity_1qebgq5" isExpanded="true">
         <dc:Bounds x="710" y="362" width="460" height="290" />
@@ -536,8 +510,20 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
       <bpmndi:BPMNShape id="Gateway_1kuijf9_di" bpmnElement="Gateway_1rdbkny">
         <dc:Bounds x="1005" y="484" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yum11i_di" bpmnElement="Activity_0lu3fv9">
+        <dc:Bounds x="2020" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uoe56v_di" bpmnElement="Activity_1b7ipfx">
+        <dc:Bounds x="2590" y="467" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wsu5q7_di" bpmnElement="Activity_13y4oo2">
+        <dc:Bounds x="1370" y="590" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y4oj9k_di" bpmnElement="Activity_1q41ioi">
+        <dc:Bounds x="1370" y="360" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_11cp3eh_di" bpmnElement="Activity_11cp3eh" isExpanded="true">
-        <dc:Bounds x="1670" y="360" width="430" height="310" />
+        <dc:Bounds x="1670" y="360" width="430" height="290" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_07nngz8_di" bpmnElement="Flow_07nngz8">
         <di:waypoint x="1778" y="440" />
@@ -547,49 +533,73 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
         <di:waypoint x="1930" y="440" />
         <di:waypoint x="1982" y="440" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_0n75f3x_di" bpmnElement="Event_0n75f3x">
-        <dc:Bounds x="1742" y="422" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05rxx0k_di" bpmnElement="Activity_1em7556" isExpanded="true">
-        <dc:Bounds x="1710" y="520" width="350" height="120" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0kcrhfm_di" bpmnElement="Flow_0kcrhfm">
-        <di:waypoint x="1930" y="580" />
-        <di:waypoint x="1982" y="580" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1kvcffb_di" bpmnElement="Flow_1kvcffb">
-        <di:waypoint x="1786" y="580" />
-        <di:waypoint x="1830" y="580" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1df9um2_di" bpmnElement="Event_1fjn1yl">
-        <dc:Bounds x="1750" y="562" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1vf77pp_di" bpmnElement="Event_13t40ms">
-        <dc:Bounds x="1982" y="562" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_08n6ekw_di" bpmnElement="Activity_06ab7js">
-        <dc:Bounds x="1830" y="540" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0d5zjov_di" bpmnElement="Activity_15n3mok">
+        <dc:Bounds x="1830" y="400" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1swajqv_di" bpmnElement="Event_1swajqv">
         <dc:Bounds x="1982" y="422" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0d5zjov_di" bpmnElement="Activity_15n3mok">
-        <dc:Bounds x="1830" y="400" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_0n75f3x_di" bpmnElement="Event_0n75f3x">
+        <dc:Bounds x="1742" y="422" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0y4oj9k_di" bpmnElement="Activity_1q41ioi">
-        <dc:Bounds x="1370" y="360" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_05rxx0k_di" bpmnElement="Activity_1em7556" isExpanded="true">
+        <dc:Bounds x="1805" y="510" width="150" height="120" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1wsu5q7_di" bpmnElement="Activity_13y4oo2">
-        <dc:Bounds x="1370" y="590" width="100" height="80" />
+      <bpmndi:BPMNEdge id="Flow_1kvcffb_di" bpmnElement="Flow_1kvcffb">
+        <di:waypoint x="1863" y="570" />
+        <di:waypoint x="1897" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1df9um2_di" bpmnElement="Event_1fjn1yl">
+        <dc:Bounds x="1827" y="552" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0uoe56v_di" bpmnElement="Activity_1b7ipfx">
-        <dc:Bounds x="2590" y="467" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_1vf77pp_di" bpmnElement="Event_13t40ms">
+        <dc:Bounds x="1897" y="552" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_04tam46_di" bpmnElement="Event_0qqbmp5">
-        <dc:Bounds x="1152" y="344" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_1npd9iw_di" bpmnElement="Event_1npd9iw">
+        <dc:Bounds x="2262" y="634" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kjzc5d_di" bpmnElement="CompensationTask">
+        <dc:Bounds x="1900" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vbrzgr_di" bpmnElement="Activity_0ninrg0">
+        <dc:Bounds x="2340" y="467" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0v2q17l_di" bpmnElement="Event_0brdw8e">
+        <dc:Bounds x="2842" y="489" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1meux3u_di" bpmnElement="Gateway_1meux3u" isMarkerVisible="true">
+        <dc:Bounds x="2735" y="482" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1tugbfn_di" bpmnElement="Gateway_1tugbfn" isMarkerVisible="true">
+        <dc:Bounds x="2495" y="482" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zf3e5n_di" bpmnElement="Activity_04ehzam">
+        <dc:Bounds x="2180" y="467" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1pya96z_di" bpmnElement="Event_058rpw5">
+        <dc:Bounds x="1272" y="616" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_016d57y_di" bpmnElement="Gateway_1sna64i">
+        <dc:Bounds x="1535" y="482" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0x3g9pl_di" bpmnElement="Gateway_08hbcsa">
+        <dc:Bounds x="1265" y="482" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hqr2qz_di" bpmnElement="ConditionalEndEvent">
+        <dc:Bounds x="1452" y="232" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0vw7vjr_di" bpmnElement="Association_0vw7vjr">
+        <di:waypoint x="1950" y="342" />
+        <di:waypoint x="1950" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1l4pl7p_di" bpmnElement="Event_194uac5">
+        <dc:Bounds x="1452" y="342" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1pfj12t_di" bpmnElement="Event_0e4dcxm">
         <dc:Bounds x="2262" y="529" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04tam46_di" bpmnElement="Event_0qqbmp5">
+        <dc:Bounds x="1152" y="344" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0d07ye8_di" bpmnElement="CompensationEvent">
         <dc:Bounds x="1932" y="342" width="36" height="36" />
@@ -600,27 +610,43 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
       <bpmndi:BPMNShape id="Event_0wx0ki8_di" bpmnElement="Event_1k5v4p8">
         <dc:Bounds x="1692" y="342" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_0vw7vjr_di" bpmnElement="Association_0vw7vjr">
-        <di:waypoint x="1950" y="342" />
-        <di:waypoint x="1950" y="290" />
+      <bpmndi:BPMNShape id="Participant_1kpd7fy_di" bpmnElement="Participant_1kpd7fy" isHorizontal="true">
+        <dc:Bounds x="1100" y="930" width="430" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_14ggbz7_di" bpmnElement="Flow_14ggbz7">
+        <di:waypoint x="1308" y="1050" />
+        <di:waypoint x="1370" y="1050" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1l4pl7p_di" bpmnElement="Event_194uac5">
-        <dc:Bounds x="1452" y="342" width="36" height="36" />
+      <bpmndi:BPMNEdge id="Flow_1uva1m4_di" bpmnElement="Flow_1uva1m4">
+        <di:waypoint x="1198" y="1050" />
+        <di:waypoint x="1272" y="1050" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0vdvlhw_di" bpmnElement="Event_114zk15">
+        <dc:Bounds x="1162" y="1032" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1148" y="1075" width="72" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pnfsvp_di" bpmnElement="Activity_10oxxes">
+        <dc:Bounds x="1370" y="1010" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1eo2ecc_di" bpmnElement="Event_1u2oli4">
+        <dc:Bounds x="1272" y="1032" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_007sit1_di" bpmnElement="Participant_007sit1" isHorizontal="true">
         <dc:Bounds x="1630" y="930" width="600" height="250" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1wc2tmy_di" bpmnElement="Flow_1wc2tmy">
-        <di:waypoint x="2060" y="1060" />
-        <di:waypoint x="2122" y="1060" />
+      <bpmndi:BPMNEdge id="Flow_0nzz7yz_di" bpmnElement="Flow_0nzz7yz">
+        <di:waypoint x="1900" y="1060" />
+        <di:waypoint x="1960" y="1060" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17t4ro8_di" bpmnElement="Flow_17t4ro8">
         <di:waypoint x="1748" y="1060" />
         <di:waypoint x="1800" y="1060" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nzz7yz_di" bpmnElement="Flow_0nzz7yz">
-        <di:waypoint x="1900" y="1060" />
-        <di:waypoint x="1960" y="1060" />
+      <bpmndi:BPMNEdge id="Flow_1wc2tmy_di" bpmnElement="Flow_1wc2tmy">
+        <di:waypoint x="2060" y="1060" />
+        <di:waypoint x="2122" y="1060" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0wcrhcb_di" bpmnElement="Event_0wcrhcb">
         <dc:Bounds x="1712" y="1042" width="36" height="36" />
@@ -639,29 +665,6 @@ execution.setVariable("groovyTestVal", testVal);</bpmn:script>
         <bpmndi:BPMNLabel>
           <dc:Bounds x="2109" y="1085" width="63" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Participant_1kpd7fy_di" bpmnElement="Participant_1kpd7fy" isHorizontal="true">
-        <dc:Bounds x="1100" y="930" width="430" height="250" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1uva1m4_di" bpmnElement="Flow_1uva1m4">
-        <di:waypoint x="1198" y="1050" />
-        <di:waypoint x="1272" y="1050" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14ggbz7_di" bpmnElement="Flow_14ggbz7">
-        <di:waypoint x="1308" y="1050" />
-        <di:waypoint x="1370" y="1050" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_0vdvlhw_di" bpmnElement="Event_114zk15">
-        <dc:Bounds x="1162" y="1032" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1148" y="1075" width="72" height="53" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1eo2ecc_di" bpmnElement="Event_1u2oli4">
-        <dc:Bounds x="1272" y="1032" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0pnfsvp_di" bpmnElement="Activity_10oxxes">
-        <dc:Bounds x="1370" y="1010" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_16zlssm_di" bpmnElement="Flow_16zlssm">
         <di:waypoint x="1420" y="1010" />

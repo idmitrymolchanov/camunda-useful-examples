@@ -1,4 +1,4 @@
-package org.example.bpmn.process_element_example.delegate;
+package org.example.bpmn.all_elements_example_pa.delegate;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;

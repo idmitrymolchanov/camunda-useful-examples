@@ -1,4 +1,4 @@
-package org.example.bpmn.external_task_example;
+package org.example.bpmn.external_task_example_pa;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
