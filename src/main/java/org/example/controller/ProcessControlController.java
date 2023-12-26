@@ -3,8 +3,9 @@ package org.example.controller;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.example.service.ProcessCorrelationService;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.example.controller.dto.ProcessIdEnum;
+import org.example.service.BpmnEngineService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,28 +15,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ProcessControlController {
 
-  private final ProcessCorrelationService correlationService;
+  private final BpmnEngineService correlationService;
 
   @PostMapping(value = "/add-variable")
-  public void createVariable(
+  public void addVariablesToCurrentProcessInstance(
       @RequestParam UUID businessKey,
       @RequestBody Map<String, Object> variables) {
     correlationService.addVariableToProcess(businessKey, variables);
   }
 
   @PostMapping(value = "/correlate")
-  public void correlateByBusinessKey(
+  public void correlateMessageInProcessByBusinessKey(
       @RequestParam UUID businessKey,
       @RequestParam String messageName) {
     correlationService.correlateProcessByKey(businessKey, messageName);
   }
 
-  @PostMapping(value = "/start/{processId}")
-  public void startByBusinessKey(
-      @PathVariable String processId,
+  @PostMapping(value = "/start", consumes = {MediaType.APPLICATION_JSON_VALUE})
+  public String startProcessByBusinessKeyAndProcessId(
+      @RequestParam ProcessIdEnum processId,
       @RequestParam UUID businessKey,
       @RequestBody Map<String, Object> variables) {
-    correlationService.startProcess(processId, businessKey, variables);
+    return correlationService.startProcess(processId, businessKey, variables);
   }
 
 }

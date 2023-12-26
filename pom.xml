@@ -104,6 +104,11 @@
             <version>3.0.16</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.camunda.bpm.springboot</groupId>
+            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+            <version>${camunda.version}</version>
+        </dependency>
         <!-- endregion -->
 
         <dependency>

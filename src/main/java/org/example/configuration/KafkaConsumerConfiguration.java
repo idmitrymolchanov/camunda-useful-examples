@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.KafkaExampleModel;
-import org.example.service.ProcessCorrelationService;
+import org.example.service.BpmnEngineServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KafkaConsumerConfiguration {
 
-  private final ProcessCorrelationService correlationService;
+  private final BpmnEngineServiceImpl correlationService;
 
   @Bean
   public Consumer<Message<KafkaExampleModel>> consumeExampleMessage() {
@@ -28,9 +28,9 @@ public class KafkaConsumerConfiguration {
         Object correlationHeader = message.getHeaders().get(CORRELATION_HEADER);
         if (correlationHeader != null) {
           String correlationId = correlationHeader.toString();
-          log.debug("received message with correlationId: {}", correlationId);
+          log.info("received message with correlationId: {}", correlationId);
           KafkaExampleModel model = message.getPayload();
-          correlationService.correlateProcessByCorrelationId(correlationId, model);
+          correlationService.correlateProcessByBusinessKey(correlationId, model);
         }
       } catch (Exception e) {
         log.error("В процессе обработки сообщения возникло исключение.", e);
